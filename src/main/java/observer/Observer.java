@@ -2,5 +2,5 @@ package observer;
 
 public interface Observer {
 
-    void observeChange();
+    void fireUpdate();
 }
