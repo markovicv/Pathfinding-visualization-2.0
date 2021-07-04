@@ -32,6 +32,13 @@ public class NodePaintComponent {
             return new Color(213,1,2);
         if(nodeType == NodeType.START)
             return new Color(166,180,1);
+        if(nodeType == NodeType.TO_VISIT){
+            return new Color(160,160,160);
+        }
+        if(nodeType == NodeType.VISITED)
+            return new Color(135,206,250);
+        if(nodeType == NodeType.PATH)
+            return new Color(240,215,53);
         return new Color(255,255,255);
     }
 }

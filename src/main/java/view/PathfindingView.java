@@ -1,14 +1,19 @@
 package view;
 
+import algorithms.Bfs;
+import algorithms.PathfindingAlgorithm;
 import config.ApplicationConfiguration;
 import model.Node;
 import model.NodeType;
+import observer.Observer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class PathfindingView extends JPanel implements MouseMotionListener, KeyListener, MouseListener {
+public class PathfindingView extends JPanel implements Observer, MouseMotionListener, KeyListener, MouseListener {
 
     Node board[][] = new Node[ApplicationConfiguration.getInstance().getRowNumber()][ApplicationConfiguration.getInstance().getRowNumber()];
     private NodePaintComponent nodePaintComponent = new NodePaintComponent();
@@ -19,6 +24,9 @@ public class PathfindingView extends JPanel implements MouseMotionListener, KeyL
     Node startNode;
     Node endNode;
 
+    private ExecutorService executorService;
+    private PathfindingAlgorithm pathfindingAlgorithm;
+
 
 
 
@@ -27,6 +35,7 @@ public class PathfindingView extends JPanel implements MouseMotionListener, KeyL
         initBoard();
         initViewAcordingToBoard();
         initViewProperties();
+        executorService = Executors.newFixedThreadPool(10);
     }
 
 
@@ -50,11 +59,22 @@ public class PathfindingView extends JPanel implements MouseMotionListener, KeyL
         setMaximumSize(viewSize);
     }
 
+    private void startBfsTest(){
+        pathfindingAlgorithm = new Bfs(board,startNode,endNode);
+        pathfindingAlgorithm.addObserver(this);
+        executorService.submit(new Thread(pathfindingAlgorithm));
+    }
+
     private void initViewProperties() {
         setFocusable(true);
         addMouseMotionListener(this);
         addMouseListener(this);
         addKeyListener(this);
+    }
+
+    @Override
+    public void fireUpdate() {
+        repaint();
     }
 
     @Override
@@ -163,9 +183,10 @@ public class PathfindingView extends JPanel implements MouseMotionListener, KeyL
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
-        System.out.println(keyPressed);
         if(keyEvent.getKeyChar() == 's' || keyEvent.getKeyChar() == 'e')
             keyPressed = keyEvent.getKeyChar();
+        else if(keyEvent.getKeyChar() == 'b')
+            startBfsTest();
     }
 
     @Override
