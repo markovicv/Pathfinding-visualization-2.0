@@ -99,4 +99,12 @@ public abstract class PathfindingAlgorithm implements Observable,Runnable {
         if(observers.contains(observer))
             observers.remove(observer);
     }
+
+    public boolean isAlgorithmRunning() {
+        return algorithmRunning;
+    }
+
+    public void setAlgorithmRunning(boolean algorithmRunning) {
+        this.algorithmRunning = algorithmRunning;
+    }
 }

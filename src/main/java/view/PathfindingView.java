@@ -76,7 +76,6 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
         }
         if(algorithmType.equals("BFS")){
             return new Bfs(board,startNode,endNode);
-
         }
         return null;
     }
@@ -106,6 +105,11 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
     public void mouseDragged(MouseEvent mouseEvent) {
         basicGridCommands(mouseEvent);
 
+    }
+    public boolean isAlgorithmRunning(){
+        if(pathfindingAlgorithm!=null)
+            return pathfindingAlgorithm.isAlgorithmRunning();
+        return false;
     }
 
     private void basicGridCommands(MouseEvent event){
