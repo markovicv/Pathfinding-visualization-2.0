@@ -30,29 +30,26 @@ public class CommandView extends JPanel {
         this.algoList.setFocusable(false);
         this.btnVisualize.setFocusable(false);
         this.btnClear.setFocusable(false);
-        this.speedList.setFocusable(false);
         this.btnNewBoard.setFocusable(false);
         this.add(new JLabel("Pathfinding algorithm: "));
         this.add(algoList);
-        this.add(new JLabel("Speed: "));
-        this.add(speedList);
         this.add(btnVisualize);
         this.add(btnClear);
         this.add(btnNewBoard);
     }
     private void initListeners(){
         btnVisualize.addActionListener(actionEvent->{
-            if(!pathfindingView.isAlgorithmRunning())
+            if(!pathfindingView.isAlgorithmRunning() && !pathfindingView.errorChecking())
                 pathfindingView.startPathfindingAlgorithm(algoList.getSelectedItem().toString(),10);
 
         });
         btnClear.addActionListener(actionEvent->{
-            if(!pathfindingView.isAlgorithmRunning())
+            if(!pathfindingView.isAlgorithmRunning() && !pathfindingView.errorChecking())
                 pathfindingView.clearAlgorithm();
 
         });
         btnNewBoard.addActionListener(actionEvent->{
-            if(!pathfindingView.isAlgorithmRunning())
+            if(!pathfindingView.isAlgorithmRunning() && !pathfindingView.errorChecking())
                 pathfindingView.clearBoard();
         });
 

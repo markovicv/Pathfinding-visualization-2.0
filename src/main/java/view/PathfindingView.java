@@ -227,6 +227,18 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
         repaint();
     }
 
+    public boolean errorChecking(){
+        if(startNode == null){
+            JOptionPane.showMessageDialog(this,"Start node not initialized","Error",JOptionPane.ERROR_MESSAGE);
+            return true;
+        }
+        if(endNode == null){
+            JOptionPane.showMessageDialog(this,"End node not initialized","Error",JOptionPane.ERROR_MESSAGE);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void keyTyped(KeyEvent keyEvent) {
 
