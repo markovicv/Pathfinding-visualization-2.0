@@ -1,6 +1,6 @@
 package model;
 
-public class Node {
+public class Node implements Comparable<Node>{
 
     /*
         Estimated movement cost to move from the given square to the final destination (square)
@@ -27,6 +27,15 @@ public class Node {
         this.col = col;
         this.nodeType = nodeType;
         this.f = this.g = this.h = Integer.MAX_VALUE;
+    }
+
+    @Override
+    public int compareTo(Node node) {
+        return this.getF()-node.getF();
+    }
+
+    public void calculateF(){
+        this.f = this.h+this.g;
     }
 
     public int getH() {

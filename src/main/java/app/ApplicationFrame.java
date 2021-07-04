@@ -1,6 +1,7 @@
 package app;
 
 import config.ApplicationConfiguration;
+import view.CommandView;
 import view.PathfindingView;
 
 import javax.swing.*;
@@ -19,9 +20,12 @@ public class ApplicationFrame extends JFrame {
                 ApplicationConfiguration.getInstance().getApplicationHeight());
 
         PathfindingView pathfindingView = new PathfindingView();
+        CommandView commandView = new CommandView(pathfindingView);
+        commandView.setPreferredSize(new Dimension(ApplicationConfiguration.getInstance().getApplicationWidth(),60));
+
         JScrollPane scrollPane = new JScrollPane(pathfindingView);
         this.add(scrollPane, BorderLayout.CENTER);
-
+        this.add(commandView,BorderLayout.SOUTH);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
 

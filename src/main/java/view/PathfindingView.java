@@ -1,8 +1,11 @@
 package view;
 
+import algorithms.Astar;
 import algorithms.Bfs;
 import algorithms.PathfindingAlgorithm;
+import algorithms.distance.ManhattanDistance;
 import config.ApplicationConfiguration;
+import model.AlgorithmType;
 import model.Node;
 import model.NodeType;
 import observer.Observer;
@@ -59,10 +62,23 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
         setMaximumSize(viewSize);
     }
 
-    private void startBfsTest(){
-        pathfindingAlgorithm = new Bfs(board,startNode,endNode);
-        pathfindingAlgorithm.addObserver(this);
+
+
+    public void startPathfindingAlgorithm(String algorithmType,int speed){
+        this.pathfindingAlgorithm = generateAlgorithm(algorithmType);
+        this.pathfindingAlgorithm.addObserver(this);
         executorService.submit(new Thread(pathfindingAlgorithm));
+    }
+
+    private PathfindingAlgorithm generateAlgorithm(String algorithmType){
+        if(algorithmType.equals("A*")){
+            return new Astar(board,startNode,endNode,new ManhattanDistance());
+        }
+        if(algorithmType.equals("BFS")){
+            return new Bfs(board,startNode,endNode);
+
+        }
+        return null;
     }
 
     private void initViewProperties() {
@@ -185,8 +201,7 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
     public void keyPressed(KeyEvent keyEvent) {
         if(keyEvent.getKeyChar() == 's' || keyEvent.getKeyChar() == 'e')
             keyPressed = keyEvent.getKeyChar();
-        else if(keyEvent.getKeyChar() == 'b')
-            startBfsTest();
+
     }
 
     @Override

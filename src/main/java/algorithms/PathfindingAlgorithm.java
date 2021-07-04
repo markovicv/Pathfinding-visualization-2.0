@@ -16,6 +16,7 @@ public abstract class PathfindingAlgorithm implements Observable,Runnable {
     protected Node[][] board;
     protected Node start;
     protected Node end;
+    protected boolean algorithmRunning = false;
 
     private int[] X_DIR = {0,0,1,-1};
     private int[] Y_DIR = {1,-1,0,0};
@@ -30,7 +31,9 @@ public abstract class PathfindingAlgorithm implements Observable,Runnable {
 
     @Override
     public void run() {
+        algorithmRunning=true;
         start();
+        algorithmRunning=false;
     }
     public abstract void start();
 
