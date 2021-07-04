@@ -196,6 +196,37 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
 
     }
 
+    public void clearAlgorithm(){
+        for(int i=0;i< board.length;i++){
+            for(int j=0;j<board[0].length;j++){
+                Node n=board[i][j];
+                switch (n.getNodeType()){
+                    case START:
+                        board[i][j] = new Node(i,j,NodeType.START);
+                        startNode = board[i][j];
+                        break;
+                    case END:
+                        board[i][j] = new Node(i,j,NodeType.END);
+                        endNode = board[i][j];
+                        break;
+                    case BLOCK:
+                        board[i][j] = new Node(i,j,NodeType.BLOCK);
+                        break;
+                    default:
+                        board[i][j] = new Node(i,j,NodeType.EMPTY);
+                        break;
+                }
+            }
+        }
+        repaint();
+    }
+    public void clearBoard(){
+        initBoard();
+        startNode = null;
+        endNode = null;
+        repaint();
+    }
+
     @Override
     public void keyTyped(KeyEvent keyEvent) {
 

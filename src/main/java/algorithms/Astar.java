@@ -24,7 +24,6 @@ public class Astar extends PathfindingAlgorithm{
         startAstar();
     }
     private void startAstar(){
-        System.out.println("POCEO ASTARRRRR");
         Queue<Node> queue = new PriorityQueue();
         Map<Node,Node> parents = new HashMap();
         queue.add(start);

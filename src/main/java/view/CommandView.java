@@ -42,21 +42,19 @@ public class CommandView extends JPanel {
     }
     private void initListeners(){
         btnVisualize.addActionListener(actionEvent->{
-            pathfindingView.startPathfindingAlgorithm(algoList.getSelectedItem().toString(),10);
+            if(!pathfindingView.isAlgorithmRunning())
+                pathfindingView.startPathfindingAlgorithm(algoList.getSelectedItem().toString(),10);
 
         });
-//        btnClear.addActionListener(actionEvent->{
-//                visualization.clearAlgo();
-//            else{
-//                JOptionPane.showMessageDialog(this,Constants.ALGO_WORKING_ERROR,"Error",JOptionPane.ERROR_MESSAGE);
-//            }
-//        });
-//        btnNewBoard.addActionListener(actionEvent->{
-//                visualization.clearBoard();
-//            else{
-//                JOptionPane.showMessageDialog(this,Constants.ALGO_WORKING_ERROR,"Error",JOptionPane.ERROR_MESSAGE);
-//            }
-//        });
+        btnClear.addActionListener(actionEvent->{
+            if(!pathfindingView.isAlgorithmRunning())
+                pathfindingView.clearAlgorithm();
+
+        });
+        btnNewBoard.addActionListener(actionEvent->{
+            if(!pathfindingView.isAlgorithmRunning())
+                pathfindingView.clearBoard();
+        });
 
 
     }
