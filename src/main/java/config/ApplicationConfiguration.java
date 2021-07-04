@@ -8,6 +8,10 @@ public class ApplicationConfiguration {
     private static ApplicationConfiguration instance;
     private int applicationWidth;
     private int applicationHeight;
+    private int nodeMinWidth;
+    private int nodeMaxWidth;
+    private int nodeDefaultWidth;
+    private int rowNumber;
 
 
     public static ApplicationConfiguration getInstance(){
@@ -39,6 +43,10 @@ public class ApplicationConfiguration {
     private void initFields(Properties properties){
         applicationWidth = Integer.parseInt(properties.getProperty("application.width"));
         applicationHeight = Integer.parseInt(properties.getProperty("application.height"));
+        nodeMaxWidth = Integer.parseInt(properties.getProperty("application.node.max_width"));
+        nodeMinWidth = Integer.parseInt(properties.getProperty("application.node.min_width"));
+        nodeDefaultWidth = Integer.parseInt(properties.getProperty("application.node.default_width"));
+        rowNumber = Integer.parseInt(properties.getProperty("application.node.row_number"));
     }
 
     public int getApplicationWidth() {
@@ -55,5 +63,37 @@ public class ApplicationConfiguration {
 
     public void setApplicationHeight(int applicationHeight) {
         this.applicationHeight = applicationHeight;
+    }
+
+    public int getNodeMinWidth() {
+        return nodeMinWidth;
+    }
+
+    public void setNodeMinWidth(int nodeMinWidth) {
+        this.nodeMinWidth = nodeMinWidth;
+    }
+
+    public int getNodeMaxWidth() {
+        return nodeMaxWidth;
+    }
+
+    public void setNodeMaxWidth(int nodeMaxWidth) {
+        this.nodeMaxWidth = nodeMaxWidth;
+    }
+
+    public int getNodeDefaultWidth() {
+        return nodeDefaultWidth;
+    }
+
+    public void setNodeDefaultWidth(int nodeDefaultWidth) {
+        this.nodeDefaultWidth = nodeDefaultWidth;
+    }
+
+    public int getRowNumber() {
+        return rowNumber;
+    }
+
+    public void setRowNumber(int rowNumber) {
+        this.rowNumber = rowNumber;
     }
 }

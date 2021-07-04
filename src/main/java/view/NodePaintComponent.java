@@ -28,6 +28,10 @@ public class NodePaintComponent {
             return new Color(0,0,0);
         if(nodeType == NodeType.SELECTED)
             return new Color(204,255,229);
+        if(nodeType == NodeType.END)
+            return new Color(213,1,2);
+        if(nodeType == NodeType.START)
+            return new Color(166,180,1);
         return new Color(255,255,255);
     }
 }
