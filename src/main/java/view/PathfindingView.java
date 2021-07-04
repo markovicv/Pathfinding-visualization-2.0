@@ -5,7 +5,6 @@ import algorithms.Bfs;
 import algorithms.PathfindingAlgorithm;
 import algorithms.distance.ManhattanDistance;
 import config.ApplicationConfiguration;
-import model.AlgorithmType;
 import model.Node;
 import model.NodeType;
 import observer.Observer;
@@ -16,7 +15,7 @@ import java.awt.event.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class PathfindingView extends JPanel implements Observer, MouseMotionListener, KeyListener, MouseListener {
+public class PathfindingView extends JPanel implements Observer, MouseMotionListener, KeyListener, MouseListener,MouseWheelListener {
 
     Node board[][] = new Node[ApplicationConfiguration.getInstance().getRowNumber()][ApplicationConfiguration.getInstance().getRowNumber()];
     private NodePaintComponent nodePaintComponent = new NodePaintComponent();
@@ -37,7 +36,7 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
     public PathfindingView() {
         initBoard();
         initViewAcordingToBoard();
-        initViewProperties();
+        initListeners();
         executorService = Executors.newFixedThreadPool(10);
     }
 
@@ -80,11 +79,12 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
         return null;
     }
 
-    private void initViewProperties() {
+    private void initListeners() {
         setFocusable(true);
         addMouseMotionListener(this);
         addMouseListener(this);
         addKeyListener(this);
+        addMouseWheelListener(this);
     }
 
     @Override
@@ -236,18 +236,41 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
             JOptionPane.showMessageDialog(this,"End node not initialized","Error",JOptionPane.ERROR_MESSAGE);
             return true;
         }
+
         return false;
-    }
-
-    @Override
-    public void keyTyped(KeyEvent keyEvent) {
-
     }
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
         if(keyEvent.getKeyChar() == 's' || keyEvent.getKeyChar() == 'e')
             keyPressed = keyEvent.getKeyChar();
+
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent mouseWheelEvent) {
+        int currentCellWidth = ApplicationConfiguration.getInstance().getNodeDefaultWidth();
+
+        if(mouseWheelEvent.getWheelRotation()<0 && currentCellWidth<ApplicationConfiguration.getInstance().getNodeMaxWidth()){
+            int newSize = Math.min(currentCellWidth+20,ApplicationConfiguration.getInstance().getNodeMaxWidth());
+            ApplicationConfiguration.getInstance().setNodeDefaultWidth(newSize);
+            initViewAcordingToBoard();
+            repaint();
+
+        }
+        else if(mouseWheelEvent.getWheelRotation()>0 && currentCellWidth>ApplicationConfiguration.getInstance().getNodeMinWidth()){
+            int newSize = Math.max(currentCellWidth-20,ApplicationConfiguration.getInstance().getNodeMinWidth());
+            ApplicationConfiguration.getInstance().setNodeDefaultWidth(newSize);
+            initViewAcordingToBoard();
+            repaint();
+
+
+        }
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent keyEvent) {
 
     }
 

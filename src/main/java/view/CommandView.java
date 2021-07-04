@@ -44,13 +44,18 @@ public class CommandView extends JPanel {
 
         });
         btnClear.addActionListener(actionEvent->{
-            if(!pathfindingView.isAlgorithmRunning() && !pathfindingView.errorChecking())
+            if(!pathfindingView.isAlgorithmRunning())
                 pathfindingView.clearAlgorithm();
+            else
+                JOptionPane.showMessageDialog(this,"Algorithm still working","Information",JOptionPane.INFORMATION_MESSAGE);
 
         });
         btnNewBoard.addActionListener(actionEvent->{
-            if(!pathfindingView.isAlgorithmRunning() && !pathfindingView.errorChecking())
+            if(!pathfindingView.isAlgorithmRunning())
                 pathfindingView.clearBoard();
+            else
+                JOptionPane.showMessageDialog(this,"Algorithm still working","Information",JOptionPane.INFORMATION_MESSAGE);
+
         });
 
 
