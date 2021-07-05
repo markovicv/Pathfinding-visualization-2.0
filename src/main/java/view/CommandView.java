@@ -62,14 +62,6 @@ public class CommandView extends JPanel {
     }
 
 
-//    private int generatePathfindingSpeed(String speed){
-//        if(speed.equals("slow"))
-//            return Constants.SLOW;
-//        else if(speed.equals("medium"))
-//            return Constants.MEDIUM;
-//        else
-//            return Constants.FAST;
-//    }
 
 
 }

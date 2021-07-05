@@ -27,8 +27,10 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
     Node startNode;
     Node endNode;
 
+    private String algorithmType;
     private ExecutorService executorService;
     private PathfindingAlgorithm pathfindingAlgorithm;
+
 
 
 
@@ -67,17 +69,18 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
     public void startPathfindingAlgorithm(String algorithmType,int pathfindingSpeed){
         this.pathfindingAlgorithm = generateAlgorithm(algorithmType,pathfindingSpeed);
         this.pathfindingAlgorithm.addObserver(this);
+        this.algorithmType = algorithmType;
         executorService.submit(new Thread(pathfindingAlgorithm));
     }
 
     private PathfindingAlgorithm generateAlgorithm(String algorithmType,int pathfindingSpeed){
-        if(algorithmType.equals("A*")){
+        if(algorithmType.equals(AlgorithmType.ASTAR)){
             return new Astar(board,startNode,endNode,new ManhattanDistance(),pathfindingSpeed);
         }
-        if(algorithmType.equals("BFS")){
+        if(algorithmType.equals(AlgorithmType.BFS)){
             return new Bfs(board,startNode,endNode,pathfindingSpeed);
         }
-        return null;
+        return new Astar(board,startNode,endNode,new ManhattanDistance(),pathfindingSpeed);
     }
 
     private void initListeners() {
@@ -123,19 +126,20 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
         int cellWidth = ApplicationConfiguration.getInstance().getNodeDefaultWidth();
 
         if(SwingUtilities.isLeftMouseButton(event)){
-
-            if(keyPressed == 's' && startNode==null && currentNode.getNodeType()==NodeType.EMPTY){
+            if(keyPressed == 's' && startNode==null && (currentNode.getNodeType()==NodeType.EMPTY
+            || currentNode.getNodeType() == NodeType.SELECTED)){
                 startNode = currentNode;
                 startNode.setNodeType(NodeType.START);
                 repaint(startNode.getRow()*cellWidth,startNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
 
             }
-            else if(keyPressed == 'e' && endNode == null && currentNode.getNodeType() == NodeType.EMPTY){
+            else if(keyPressed == 'e' && endNode == null && (currentNode.getNodeType() == NodeType.EMPTY
+                    || currentNode.getNodeType() == NodeType.SELECTED)){
                 endNode = currentNode;
                 endNode.setNodeType(NodeType.END);
                 repaint(endNode.getRow()*cellWidth,endNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
             }
-            else if(currentNode.getNodeType() == NodeType.EMPTY){
+            else if(currentNode.getNodeType() == NodeType.EMPTY || currentNode.getNodeType() == NodeType.SELECTED){
                 currentNode.setNodeType(NodeType.BLOCK);
                 repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
 
@@ -164,38 +168,23 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
     @Override
     public void mouseMoved(MouseEvent mouseEvent) {
 
-//        if(keyPressed == 's' || keyPressed =='e')
-//            return;
-//        int row = mouseEvent.getX() / ApplicationConfiguration.getInstance().getNodeDefaultWidth();
-//        int col = mouseEvent.getY() / ApplicationConfiguration.getInstance().getNodeDefaultWidth();
-//        int cellWidth = ApplicationConfiguration.getInstance().getNodeDefaultWidth();
-//
-//        Node newSelectedNode = board[row][col];
-//
-//
-//        //TODO srediti !!
-//        if(newSelectedNode.getNodeType() == NodeType.BLOCK){
-//            if(mouseHoveringNode!=null){
-//
-//                mouseHoveringNode.setNodeType(NodeType.EMPTY);
-//                repaint(mouseHoveringNode.getRow()*cellWidth,mouseHoveringNode.getCol()*cellWidth,cellWidth,cellWidth);
-//            }
-//
-//        }
-//
-//        if (newSelectedNode.getNodeType() != NodeType.EMPTY) {
-//            return;
-//        }
-//
-//        newSelectedNode.setNodeType(NodeType.SELECTED);
-//
-//        if (mouseHoveringNode != null) {
-//            mouseHoveringNode.setNodeType(NodeType.EMPTY);
-//            repaint(mouseHoveringNode.getRow()*cellWidth,mouseHoveringNode.getCol()*cellWidth,cellWidth,cellWidth);
-//        }
-//
-//        mouseHoveringNode = newSelectedNode;
-//        repaint(mouseHoveringNode.getRow()*cellWidth,mouseHoveringNode.getCol()*cellWidth,cellWidth,cellWidth);
+        int row = mouseEvent.getX() / ApplicationConfiguration.getInstance().getNodeDefaultWidth();
+        int col = mouseEvent.getY() / ApplicationConfiguration.getInstance().getNodeDefaultWidth();
+        int cellWidth = ApplicationConfiguration.getInstance().getNodeDefaultWidth();
+
+
+        Node newSelectedNode = board[row][col];
+
+        if(newSelectedNode.getNodeType() == NodeType.EMPTY){
+            newSelectedNode.setNodeType(NodeType.SELECTED);
+            if(mouseHoveringNode!=null && mouseHoveringNode.getNodeType() == NodeType.SELECTED){
+                mouseHoveringNode.setNodeType(NodeType.EMPTY);
+                repaint(mouseHoveringNode.getRow()*cellWidth,mouseHoveringNode.getCol()*cellWidth,cellWidth,cellWidth);
+            }
+
+            mouseHoveringNode = newSelectedNode;
+            repaint(mouseHoveringNode.getRow()*cellWidth,mouseHoveringNode.getCol()*cellWidth,cellWidth,cellWidth);
+        }
 
     }
 
@@ -295,6 +284,7 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
         if(keyPressed == 'q' && startNode!=null && endNode!=null){
+            keyPressed='0';
             int cellWidth = ApplicationConfiguration.getInstance().getNodeDefaultWidth();
             int row = mouseEvent.getX()/cellWidth;
             int col = mouseEvent.getY()/cellWidth;
@@ -305,7 +295,8 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
             startNode.setNodeType(NodeType.START);
 
             this.clearAlgorithm();
-            this.startPathfindingAlgorithm("A*",0);
+            this.startPathfindingAlgorithm(algorithmType,0);
+
 
         }
     }
