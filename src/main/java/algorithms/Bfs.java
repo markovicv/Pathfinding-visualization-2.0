@@ -10,8 +10,8 @@ import java.util.Queue;
 
 public class Bfs extends PathfindingAlgorithm{
 
-    public Bfs(Node[][] board, Node start, Node end) {
-        super(board, start, end);
+    public Bfs(Node[][] board, Node start, Node end,int pathfindingSpeed) {
+        super(board, start, end,pathfindingSpeed);
     }
 
 

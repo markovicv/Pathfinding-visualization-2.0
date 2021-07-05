@@ -5,6 +5,7 @@ import algorithms.Bfs;
 import algorithms.PathfindingAlgorithm;
 import algorithms.distance.ManhattanDistance;
 import config.ApplicationConfiguration;
+import model.AlgorithmType;
 import model.Node;
 import model.NodeType;
 import observer.Observer;
@@ -63,18 +64,18 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
 
 
 
-    public void startPathfindingAlgorithm(String algorithmType,int speed){
-        this.pathfindingAlgorithm = generateAlgorithm(algorithmType);
+    public void startPathfindingAlgorithm(String algorithmType,int pathfindingSpeed){
+        this.pathfindingAlgorithm = generateAlgorithm(algorithmType,pathfindingSpeed);
         this.pathfindingAlgorithm.addObserver(this);
         executorService.submit(new Thread(pathfindingAlgorithm));
     }
 
-    private PathfindingAlgorithm generateAlgorithm(String algorithmType){
+    private PathfindingAlgorithm generateAlgorithm(String algorithmType,int pathfindingSpeed){
         if(algorithmType.equals("A*")){
-            return new Astar(board,startNode,endNode,new ManhattanDistance());
+            return new Astar(board,startNode,endNode,new ManhattanDistance(),pathfindingSpeed);
         }
         if(algorithmType.equals("BFS")){
-            return new Bfs(board,startNode,endNode);
+            return new Bfs(board,startNode,endNode,pathfindingSpeed);
         }
         return null;
     }
@@ -103,6 +104,8 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
 
     @Override
     public void mouseDragged(MouseEvent mouseEvent) {
+        if(keyPressed=='q')
+            return;
         basicGridCommands(mouseEvent);
 
     }
@@ -242,7 +245,7 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
 
     @Override
     public void keyPressed(KeyEvent keyEvent) {
-        if(keyEvent.getKeyChar() == 's' || keyEvent.getKeyChar() == 'e')
+        if(keyEvent.getKeyChar() == 's' || keyEvent.getKeyChar() == 'e' || keyEvent.getKeyChar() == 'q')
             keyPressed = keyEvent.getKeyChar();
 
     }
@@ -291,7 +294,20 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
 
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
+        if(keyPressed == 'q' && startNode!=null && endNode!=null){
+            int cellWidth = ApplicationConfiguration.getInstance().getNodeDefaultWidth();
+            int row = mouseEvent.getX()/cellWidth;
+            int col = mouseEvent.getY()/cellWidth;
 
+            Node n = board[row][col];
+            startNode.setNodeType(NodeType.EMPTY);
+            startNode = n;
+            startNode.setNodeType(NodeType.START);
+
+            this.clearAlgorithm();
+            this.startPathfindingAlgorithm("A*",0);
+
+        }
     }
 
     @Override

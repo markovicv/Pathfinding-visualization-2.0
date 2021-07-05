@@ -13,8 +13,8 @@ public class Astar extends PathfindingAlgorithm{
 
     private Distance distance;
 
-    public Astar(Node[][] board, Node start, Node end,Distance distance) {
-        super(board, start, end);
+    public Astar(Node[][] board, Node start, Node end,Distance distance,int pathfindingSpeed) {
+        super(board, start, end,pathfindingSpeed);
         this.distance = distance;
     }
 

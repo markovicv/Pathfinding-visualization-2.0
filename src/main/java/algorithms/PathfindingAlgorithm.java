@@ -17,15 +17,17 @@ public abstract class PathfindingAlgorithm implements Observable,Runnable {
     protected Node start;
     protected Node end;
     protected boolean algorithmRunning = false;
+    protected int pathfindingSpeed = 0;
 
     private int[] X_DIR = {0,0,1,-1};
     private int[] Y_DIR = {1,-1,0,0};
 
 
-    public PathfindingAlgorithm(Node[][] board,Node start,Node end){
+    public PathfindingAlgorithm(Node[][] board,Node start,Node end,int pathfindingSpeed){
         this.board = board;
         this.start = start;
         this.end = end;
+        this.pathfindingSpeed = pathfindingSpeed;
 
     }
 
@@ -75,7 +77,7 @@ public abstract class PathfindingAlgorithm implements Observable,Runnable {
     }
     public void sleep(){
         try {
-            Thread.sleep(8);
+            Thread.sleep(pathfindingSpeed);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -106,5 +108,13 @@ public abstract class PathfindingAlgorithm implements Observable,Runnable {
 
     public void setAlgorithmRunning(boolean algorithmRunning) {
         this.algorithmRunning = algorithmRunning;
+    }
+
+    public int getPathfindingSpeed() {
+        return pathfindingSpeed;
+    }
+
+    public void setPathfindingSpeed(int pathfindingSpeed) {
+        this.pathfindingSpeed = pathfindingSpeed;
     }
 }
