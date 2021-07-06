@@ -2,8 +2,10 @@ package view;
 
 import algorithms.Astar;
 import algorithms.Bfs;
+import algorithms.Dfs;
 import algorithms.PathfindingAlgorithm;
 import algorithms.distance.ManhattanDistance;
+import algorithms.factory.PathFindingAlgorithmFactory;
 import config.ApplicationConfiguration;
 import model.AlgorithmType;
 import model.Node;
@@ -67,21 +69,13 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
 
 
     public void startPathfindingAlgorithm(String algorithmType,int pathfindingSpeed){
-        this.pathfindingAlgorithm = generateAlgorithm(algorithmType,pathfindingSpeed);
+        this.pathfindingAlgorithm = PathFindingAlgorithmFactory.getPathFindingAlgorithm(algorithmType,pathfindingSpeed,board,startNode,endNode);
         this.pathfindingAlgorithm.addObserver(this);
         this.algorithmType = algorithmType;
         executorService.submit(new Thread(pathfindingAlgorithm));
     }
 
-    private PathfindingAlgorithm generateAlgorithm(String algorithmType,int pathfindingSpeed){
-        if(algorithmType.equals(AlgorithmType.ASTAR)){
-            return new Astar(board,startNode,endNode,new ManhattanDistance(),pathfindingSpeed);
-        }
-        if(algorithmType.equals(AlgorithmType.BFS)){
-            return new Bfs(board,startNode,endNode,pathfindingSpeed);
-        }
-        return new Astar(board,startNode,endNode,new ManhattanDistance(),pathfindingSpeed);
-    }
+
 
     private void initListeners() {
         setFocusable(true);
@@ -144,49 +138,32 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
                 repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
 
             }
+            keyPressed = '0';
         }
-        else if(SwingUtilities.isRightMouseButton(event)){
+        else if(SwingUtilities.isRightMouseButton(event) && !isAlgorithmRunning()){
             if(currentNode.getNodeType() == NodeType.END){
                 endNode=null;
+                currentNode.setNodeType(NodeType.EMPTY);
+                repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
             }
             else if(currentNode.getNodeType() == NodeType.START){
-
                 startNode = null;
+                currentNode.setNodeType(NodeType.EMPTY);
+                repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
+            }
+            else if(currentNode.getNodeType() == NodeType.BLOCK){
+                currentNode.setNodeType(NodeType.EMPTY);
+                repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
+
             }
 
 
-            currentNode.setNodeType(NodeType.EMPTY);
-            repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
+
 
         }
 
     }
 
-    /*
-        used for painting a node we are currently hovering over
-     */
-    @Override
-    public void mouseMoved(MouseEvent mouseEvent) {
-
-        int row = mouseEvent.getX() / ApplicationConfiguration.getInstance().getNodeDefaultWidth();
-        int col = mouseEvent.getY() / ApplicationConfiguration.getInstance().getNodeDefaultWidth();
-        int cellWidth = ApplicationConfiguration.getInstance().getNodeDefaultWidth();
-
-
-        Node newSelectedNode = board[row][col];
-
-        if(newSelectedNode.getNodeType() == NodeType.EMPTY){
-            newSelectedNode.setNodeType(NodeType.SELECTED);
-            if(mouseHoveringNode!=null && mouseHoveringNode.getNodeType() == NodeType.SELECTED){
-                mouseHoveringNode.setNodeType(NodeType.EMPTY);
-                repaint(mouseHoveringNode.getRow()*cellWidth,mouseHoveringNode.getCol()*cellWidth,cellWidth,cellWidth);
-            }
-
-            mouseHoveringNode = newSelectedNode;
-            repaint(mouseHoveringNode.getRow()*cellWidth,mouseHoveringNode.getCol()*cellWidth,cellWidth,cellWidth);
-        }
-
-    }
 
     public void clearAlgorithm(){
         for(int i=0;i< board.length;i++){
@@ -212,13 +189,13 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
         }
         repaint();
     }
+
     public void clearBoard(){
         initBoard();
         startNode = null;
         endNode = null;
         repaint();
     }
-
     public boolean errorChecking(){
         if(startNode == null){
             JOptionPane.showMessageDialog(this,"Start node not initialized","Error",JOptionPane.ERROR_MESSAGE);
@@ -260,27 +237,6 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
         }
 
     }
-
-    @Override
-    public void keyTyped(KeyEvent keyEvent) {
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent keyEvent) {
-
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent mouseEvent) {
-        basicGridCommands(mouseEvent);
-    }
-
-    @Override
-    public void mousePressed(MouseEvent mouseEvent) {
-
-    }
-
     @Override
     public void mouseReleased(MouseEvent mouseEvent) {
         if(keyPressed == 'q' && startNode!=null && endNode!=null){
@@ -300,6 +256,35 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
 
         }
     }
+
+    @Override
+    public void mouseClicked(MouseEvent mouseEvent) {
+        basicGridCommands(mouseEvent);
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent mouseEvent) {
+
+
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent keyEvent) {
+
+    }
+
+    @Override
+    public void keyReleased(KeyEvent keyEvent) {
+
+    }
+
+    @Override
+    public void mousePressed(MouseEvent mouseEvent) {
+
+    }
+
+
 
     @Override
     public void mouseEntered(MouseEvent mouseEvent) {
