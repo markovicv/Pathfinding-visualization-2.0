@@ -41,13 +41,13 @@ public abstract class PathfindingAlgorithm implements Observable,Runnable {
 
 
     protected boolean isFieldValid(Node node,int rowDir,int colDir){
-        if(node.getRow()<0 || node.getRow()> ApplicationConfiguration.getInstance().getRowNumber())
+        if(node.getRow()<0 || node.getRow()>= ApplicationConfiguration.getInstance().getRowNumber())
             return false;
-        if(node.getCol()<0 || node.getCol()>ApplicationConfiguration.getInstance().getRowNumber())
+        if(node.getCol()<0 || node.getCol()>=ApplicationConfiguration.getInstance().getRowNumber())
             return false;
-        if(node.getRow()+rowDir<0 || node.getRow()+rowDir>ApplicationConfiguration.getInstance().getRowNumber())
+        if(node.getRow()+rowDir<0 || node.getRow()+rowDir>=ApplicationConfiguration.getInstance().getRowNumber())
             return false;
-        if(node.getCol()+colDir < 0 || node.getCol()+colDir > ApplicationConfiguration.getInstance().getRowNumber())
+        if(node.getCol()+colDir < 0 || node.getCol()+colDir >= ApplicationConfiguration.getInstance().getRowNumber())
             return false;
         if(board[node.getRow()+rowDir][node.getCol()+colDir].getNodeType() == NodeType.BLOCK)
             return false;
