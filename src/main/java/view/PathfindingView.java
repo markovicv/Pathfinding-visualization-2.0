@@ -1,13 +1,8 @@
 package view;
 
-import algorithms.Astar;
-import algorithms.Bfs;
-import algorithms.Dfs;
 import algorithms.PathfindingAlgorithm;
-import algorithms.distance.ManhattanDistance;
 import algorithms.factory.PathFindingAlgorithmFactory;
 import config.ApplicationConfiguration;
-import model.AlgorithmType;
 import model.Node;
 import model.NodeType;
 import observer.Observer;
@@ -20,18 +15,19 @@ import java.util.concurrent.Executors;
 
 public class PathfindingView extends JPanel implements Observer, MouseMotionListener, KeyListener, MouseListener,MouseWheelListener {
 
-    Node board[][] = new Node[ApplicationConfiguration.getInstance().getRowNumber()][ApplicationConfiguration.getInstance().getRowNumber()];
+    Node[][] board = new Node[ApplicationConfiguration.getInstance().getRowNumber()][ApplicationConfiguration.getInstance().getRowNumber()];
     private NodePaintComponent nodePaintComponent = new NodePaintComponent();
 
     private char keyPressed = (char)0;
 
-    Node mouseHoveringNode;
+
     Node startNode;
     Node endNode;
 
     private String algorithmType;
     private ExecutorService executorService;
     private PathfindingAlgorithm pathfindingAlgorithm;
+    private boolean algorithmErasedFromBoard = true;
 
 
 
@@ -73,6 +69,7 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
         this.pathfindingAlgorithm.addObserver(this);
         this.algorithmType = algorithmType;
         executorService.submit(new Thread(pathfindingAlgorithm));
+        algorithmErasedFromBoard=false;
     }
 
 
@@ -120,52 +117,58 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
         int cellWidth = ApplicationConfiguration.getInstance().getNodeDefaultWidth();
 
         if(SwingUtilities.isLeftMouseButton(event)){
-            if(keyPressed == 's' && startNode==null && (currentNode.getNodeType()==NodeType.EMPTY
-            || currentNode.getNodeType() == NodeType.SELECTED)){
-                startNode = currentNode;
-                startNode.setNodeType(NodeType.START);
-                repaint(startNode.getRow()*cellWidth,startNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
 
-            }
-            else if(keyPressed == 'e' && endNode == null && (currentNode.getNodeType() == NodeType.EMPTY
-                    || currentNode.getNodeType() == NodeType.SELECTED)){
-                endNode = currentNode;
-                endNode.setNodeType(NodeType.END);
-                repaint(endNode.getRow()*cellWidth,endNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
-            }
-            else if(currentNode.getNodeType() == NodeType.EMPTY || currentNode.getNodeType() == NodeType.SELECTED){
-                currentNode.setNodeType(NodeType.BLOCK);
-                repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
-
-            }
+            mouseDrawNodes(currentNode,cellWidth);
             keyPressed = '0';
         }
         else if(SwingUtilities.isRightMouseButton(event) && !isAlgorithmRunning()){
-            if(currentNode.getNodeType() == NodeType.END){
-                endNode=null;
-                currentNode.setNodeType(NodeType.EMPTY);
-                repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
-            }
-            else if(currentNode.getNodeType() == NodeType.START){
-                startNode = null;
-                currentNode.setNodeType(NodeType.EMPTY);
-                repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
-            }
-            else if(currentNode.getNodeType() == NodeType.BLOCK){
-                currentNode.setNodeType(NodeType.EMPTY);
-                repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
-
-            }
-
-
-
-
+           mouseEraseNodes(currentNode,cellWidth);
         }
 
+    }
+    private void mouseDrawNodes(Node currentNode,int cellWidth){
+        if(keyPressed == 's' && startNode==null && (currentNode.getNodeType()==NodeType.EMPTY
+                || currentNode.getNodeType() == NodeType.SELECTED)){
+            startNode = currentNode;
+            startNode.setNodeType(NodeType.START);
+            repaint(startNode.getRow()*cellWidth,startNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
+
+        }
+        else if(keyPressed == 'e' && endNode == null && (currentNode.getNodeType() == NodeType.EMPTY
+                || currentNode.getNodeType() == NodeType.SELECTED)){
+            endNode = currentNode;
+            endNode.setNodeType(NodeType.END);
+            repaint(endNode.getRow()*cellWidth,endNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
+        }
+        else if(currentNode.getNodeType() == NodeType.EMPTY || currentNode.getNodeType() == NodeType.SELECTED){
+            currentNode.setNodeType(NodeType.BLOCK);
+            repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
+
+        }
+    }
+
+    private void mouseEraseNodes(Node currentNode,int cellWidth){
+        if(currentNode.getNodeType() == NodeType.END){
+            endNode=null;
+            currentNode.setNodeType(NodeType.EMPTY);
+            repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
+        }
+        else if(currentNode.getNodeType() == NodeType.START){
+            startNode = null;
+            currentNode.setNodeType(NodeType.EMPTY);
+            repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
+        }
+        else if(currentNode.getNodeType() == NodeType.BLOCK){
+            currentNode.setNodeType(NodeType.EMPTY);
+            repaint(currentNode.getRow()*cellWidth,currentNode.getCol()*cellWidth,cellWidth-1,cellWidth-1);
+
+        }
     }
 
 
     public void clearAlgorithm(){
+        algorithmErasedFromBoard=true;
+
         for(int i=0;i< board.length;i++){
             for(int j=0;j<board[0].length;j++){
                 Node n=board[i][j];
@@ -194,15 +197,20 @@ public class PathfindingView extends JPanel implements Observer, MouseMotionList
         initBoard();
         startNode = null;
         endNode = null;
+        algorithmErasedFromBoard=true;
         repaint();
     }
     public boolean errorChecking(){
         if(startNode == null){
-            JOptionPane.showMessageDialog(this,"Start node not initialized","Error",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,ApplicationConfiguration.getInstance().getStartNodeNotDefinedError(),"Error",JOptionPane.ERROR_MESSAGE);
             return true;
         }
         if(endNode == null){
-            JOptionPane.showMessageDialog(this,"End node not initialized","Error",JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,ApplicationConfiguration.getInstance().getEndNodeNotDefinedError(),"Error",JOptionPane.ERROR_MESSAGE);
+            return true;
+        }
+        if(!algorithmErasedFromBoard){
+            JOptionPane.showMessageDialog(null,ApplicationConfiguration.getInstance().getAlgorithmNotClearedError(),"Error",JOptionPane.ERROR_MESSAGE);
             return true;
         }
 

@@ -10,7 +10,7 @@ import java.awt.*;
 public class ApplicationFrame extends JFrame {
 
     public ApplicationFrame(){
-        super("Pathfinding visualization");
+        super(ApplicationConfiguration.getInstance().getApplicationName());
         initJFrameProperties();
 
     }

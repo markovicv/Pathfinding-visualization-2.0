@@ -1,5 +1,7 @@
 package view;
 
+import config.ApplicationConfiguration;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -47,14 +49,14 @@ public class CommandView extends JPanel {
             if(!pathfindingView.isAlgorithmRunning())
                 pathfindingView.clearAlgorithm();
             else
-                JOptionPane.showMessageDialog(this,"Algorithm still working","Information",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, ApplicationConfiguration.getInstance().getAlgorithmStillWorkingError(),"Information",JOptionPane.INFORMATION_MESSAGE);
 
         });
         btnNewBoard.addActionListener(actionEvent->{
             if(!pathfindingView.isAlgorithmRunning())
                 pathfindingView.clearBoard();
             else
-                JOptionPane.showMessageDialog(this,"Algorithm still working","Information",JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this,ApplicationConfiguration.getInstance().getAlgorithmStillWorkingError(),"Information",JOptionPane.INFORMATION_MESSAGE);
 
         });
 

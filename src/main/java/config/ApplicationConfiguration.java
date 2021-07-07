@@ -12,6 +12,11 @@ public class ApplicationConfiguration {
     private int nodeMaxWidth;
     private int nodeDefaultWidth;
     private int rowNumber;
+    private String applicationName;
+    private String algorithmStillWorkingError;
+    private String startNodeNotDefinedError;
+    private String endNodeNotDefinedError;
+    private String algorithmNotClearedError;
 
 
     public static ApplicationConfiguration getInstance(){
@@ -47,6 +52,11 @@ public class ApplicationConfiguration {
         nodeMinWidth = Integer.parseInt(properties.getProperty("application.node.min_width"));
         nodeDefaultWidth = Integer.parseInt(properties.getProperty("application.node.default_width"));
         rowNumber = Integer.parseInt(properties.getProperty("application.node.row_number"));
+        applicationName = properties.getProperty("application.name");
+        algorithmStillWorkingError = properties.getProperty("application.error.working");
+        startNodeNotDefinedError = properties.getProperty("application.error.start");
+        endNodeNotDefinedError = properties.getProperty("application.error.end");
+        algorithmNotClearedError = properties.getProperty("application.error.algorithm");
     }
 
     public int getApplicationWidth() {
@@ -95,5 +105,45 @@ public class ApplicationConfiguration {
 
     public void setRowNumber(int rowNumber) {
         this.rowNumber = rowNumber;
+    }
+
+    public String getApplicationName() {
+        return applicationName;
+    }
+
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
+
+    public String getAlgorithmStillWorkingError() {
+        return algorithmStillWorkingError;
+    }
+
+    public void setAlgorithmStillWorkingError(String algorithmStillWorkingError) {
+        this.algorithmStillWorkingError = algorithmStillWorkingError;
+    }
+
+    public String getStartNodeNotDefinedError() {
+        return startNodeNotDefinedError;
+    }
+
+    public void setStartNodeNotDefinedError(String startNodeNotDefinedError) {
+        this.startNodeNotDefinedError = startNodeNotDefinedError;
+    }
+
+    public String getEndNodeNotDefinedError() {
+        return endNodeNotDefinedError;
+    }
+
+    public void setEndNodeNotDefinedError(String endNodeNotDefinedError) {
+        this.endNodeNotDefinedError = endNodeNotDefinedError;
+    }
+
+    public String getAlgorithmNotClearedError() {
+        return algorithmNotClearedError;
+    }
+
+    public void setAlgorithmNotClearedError(String algorithmNotClearedError) {
+        this.algorithmNotClearedError = algorithmNotClearedError;
     }
 }
