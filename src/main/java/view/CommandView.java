@@ -42,7 +42,7 @@ public class CommandView extends JPanel {
     private void initListeners(){
         btnVisualize.addActionListener(actionEvent->{
             if(!pathfindingView.isAlgorithmRunning() && !pathfindingView.errorChecking())
-                pathfindingView.startPathfindingAlgorithm(algoList.getSelectedItem().toString(),10);
+                pathfindingView.startPathfindingAlgorithm(algoList.getSelectedItem().toString(),8);
 
         });
         btnClear.addActionListener(actionEvent->{
