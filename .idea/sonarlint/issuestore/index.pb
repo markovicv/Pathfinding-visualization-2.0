@@ -11,8 +11,6 @@ W
 'src/main/java/app/ApplicationFrame.java,b/d/bdea9f814b23c4309e75b5ffec5ed38df1c3c331
 K
 src/main/java/app/Main.java,e/b/eb1600cf0a732cd9d1abe029d6033ba40522a8bf
-J
-project-configuration.json,b/0/b042dda253797f9283281a9974ad8cc736edf880
 Z
 *src/main/java/view/NodePaintComponent.java,5/8/58c9f428133685ac62df0afcf0a11a1c82c0d53f
 7
